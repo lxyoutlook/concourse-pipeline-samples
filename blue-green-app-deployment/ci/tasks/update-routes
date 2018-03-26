@@ -3,6 +3,7 @@
 set -xe
 
 pwd
+export HTTP_PROXY=152.62.44.57:80
 env
 
 cf api $PWS_API --skip-ssl-validation

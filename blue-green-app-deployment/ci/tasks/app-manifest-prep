@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -xe
-
+export HTTP_PROXY=152.62.44.57:80
 cat ./current-app-info/current-app.txt
 
 sed "s/APPNAME/$(cat ./current-app-info/next-app.txt)-$PWS_APP_SUFFIX/" ./concourse-pipeline-samples/blue-green-app-deployment/manifests/manifest.yml > ./app-manifest-output/manifest.yml
