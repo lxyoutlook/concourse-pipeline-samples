@@ -3,6 +3,8 @@
 set -xe
 
 pwd
+export HTTP_PROXY=152.62.44.57:80
+export http_proxy=152.62.44.57:80
 env
 
 cf api $PWS_API --skip-ssl-validation
@@ -25,3 +27,4 @@ set -xe
 
 echo "Current main app routes to app instance $(cat ./current-app-info/current-app.txt)"
 echo "New version of app to be deployed to instance $(cat ./current-app-info/next-app.txt)"
+
