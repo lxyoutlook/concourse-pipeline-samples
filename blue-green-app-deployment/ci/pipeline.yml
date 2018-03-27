@@ -24,12 +24,6 @@ jobs:
 - name: deploy-app
   serial: true
   public: true
-  properties:
-    http_proxy_url: http://152.62.44.57:80
-    https_proxy_url: http://152.62.44.57:80
-    no_proxy:
-    - localhost
-    - 127.0.0.1
   plan:
   - get: concourse-pipeline-samples
     trigger: true
@@ -55,12 +49,6 @@ jobs:
   serial: true
   public: true
   plan:
-  properties:
-    http_proxy_url: http://152.62.44.57:80
-    https_proxy_url: http://152.62.44.57:80
-    no_proxy:
-    - localhost
-    - 127.0.0.1
   - get: concourse-pipeline-samples
     trigger: true
     passed:
