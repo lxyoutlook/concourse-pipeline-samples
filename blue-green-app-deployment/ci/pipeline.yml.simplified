@@ -1,9 +1,7 @@
 groups:
 - name: main
   jobs:
-  - unit-tests
   - deploy-app
-  - load-tests
   - promote-new-version
 
 resources:
@@ -11,7 +9,7 @@ resources:
   type: git
   source:
     branch: master
-    uri: https://github.com/pivotalservices/concourse-pipeline-samples.git
+    uri: https://github.com/lxyoutlook/concourse-pipeline-samples.git
 - name: PWS
   type: cf
   source:
@@ -23,23 +21,12 @@ resources:
     space: {{pws-space}}
 
 jobs:
-- name: unit-tests
-  serial: true
-  public: true
-  plan:
-  - get: concourse-pipeline-samples
-    trigger: true
-  - task: run-unit-tests
-    file: concourse-pipeline-samples/blue-green-app-deployment/ci/tasks/unit-tests.yml
-
 - name: deploy-app
   serial: true
   public: true
   plan:
   - get: concourse-pipeline-samples
     trigger: true
-    passed:
-      - unit-tests
   - task: get-current-app-color
     file: concourse-pipeline-samples/blue-green-app-deployment/ci/tasks/current-app-get-info.yml
     params:
@@ -58,29 +45,6 @@ jobs:
       manifest: app-manifest-output/manifest.yml
       path: concourse-pipeline-samples/blue-green-app-deployment/bgd-app
 
-- name: load-tests
-  serial: true
-  public: true
-  plan:
-  - get: concourse-pipeline-samples
-    trigger: true
-    passed:
-      - deploy-app
-  - task: get-current-app-color
-    file: concourse-pipeline-samples/blue-green-app-deployment/ci/tasks/current-app-get-info.yml
-    params:
-      PWS_APP_SUFFIX: {{pws-app-suffix}}
-      PWS_API: {{pws-api}}
-      PWS_ORG: {{pws-organization}}
-      PWS_USER: {{deploy-username}}
-      PWS_PWD: {{deploy-password}}
-      PWS_SPACE: {{pws-space}}
-  - task: run-load-tests
-    file: concourse-pipeline-samples/blue-green-app-deployment/ci/tasks/load-tests.yml
-    params:
-      PWS_APP_SUFFIX: {{pws-app-suffix}}
-      PWS_APP_DOMAIN: {{pws-app-domain}}
-
 - name: promote-new-version
   serial: true
   public: true
@@ -88,7 +52,7 @@ jobs:
   - get: concourse-pipeline-samples
     trigger: true
     passed:
-      - load-tests
+      - deploy-app
   - task: get-current-app-color
     file: concourse-pipeline-samples/blue-green-app-deployment/ci/tasks/current-app-get-info.yml
     params:
